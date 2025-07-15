@@ -6,8 +6,9 @@ import { FaBars } from "react-icons/fa6";
 import { Button } from "@/components/ui/button";
 import { FaHome } from "react-icons/fa";
 import { IoPowerSharp } from "react-icons/io5";
-import { use, useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+import { MdLogin } from "react-icons/md";
+import { useState } from "react";
+import { redirect, usePathname } from "next/navigation";
 import router from "next/router";
 import Link from "next/link";
 import { User } from "@/lib/types";
@@ -33,7 +34,6 @@ const Navbar = ({ user }: NavbarProps) => {
   const handleLogout = () => {
     mutate();
   };
-  console.log("user", user);
 
   return (
     <div
@@ -70,7 +70,7 @@ const Navbar = ({ user }: NavbarProps) => {
           {user && (
             <>
               <Button
-                variant={pathname === "/create-tasks" ? "link" : "ghost"}
+                variant={pathname === "/" ? "link" : "ghost"}
                 size={"lg"}
                 className="ml-0 flex w-full items-center justify-start gap-x-2 pl-0"
               >
@@ -98,21 +98,40 @@ const Navbar = ({ user }: NavbarProps) => {
               <div className="group flex w-fit -translate-x-[56px] items-center">
                 <span
                   className={`z-10 flex items-center justify-center rounded-full p-2 ${
-                    pathname === "/create-tasks"
-                      ? "bg-primary text-white"
-                      : "bg-muted"
+                    pathname === "/" ? "bg-primary text-white" : "bg-muted"
                   } text-2xl transition-all duration-200 group-hover:bg-primary`}
                 >
                   <FaHome
                     className={`${
-                      pathname === "/create-tasks"
-                        ? "text-white"
-                        : "text-primary"
+                      pathname === "/" ? "text-white" : "text-primary"
                     } group-hover:text-white`}
                   />
                 </span>
                 <span className="flex h-10 items-center rounded-full pl-2 pr-[42px] text-lg capitalize text-transparent transition-transform duration-200 group-hover:translate-x-[-100%] group-hover:bg-primary group-hover:text-white">
                   Home
+                </span>
+              </div>
+            </>
+          )}
+          {!user && (
+            <>
+              <div
+                className="group flex w-fit -translate-x-[56px] items-center"
+                onClick={() => redirect("/auth")}
+              >
+                <span
+                  className={`z-10 flex items-center justify-center rounded-full p-2 ${
+                    pathname === "/auth" ? "bg-primary text-white" : "bg-muted"
+                  } text-2xl transition-all duration-200 group-hover:bg-primary`}
+                >
+                  <MdLogin
+                    className={`${
+                      pathname === "/auth" ? "text-white" : "text-primary"
+                    } group-hover:text-white`}
+                  />
+                </span>
+                <span className="flex h-10 items-center rounded-full pl-2 pr-[42px] text-lg capitalize text-transparent transition-transform duration-200 group-hover:translate-x-[-100%] group-hover:bg-primary group-hover:text-white">
+                  Sign In
                 </span>
               </div>
             </>
