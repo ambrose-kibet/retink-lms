@@ -51,9 +51,7 @@ const RegistrationForm = () => {
         setError(data.error);
         return;
       }
-
       form.reset();
-
       return setSuccess("Registration successful! Redirecting...");
     },
   });
