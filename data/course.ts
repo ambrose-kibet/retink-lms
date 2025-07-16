@@ -46,3 +46,19 @@ export const getAllCourses = async () => {
     return null;
   }
 };
+
+export const getCourseById = async (courseId: string) => {
+  try {
+    const course = await db.course.findUnique({
+      where: { id: courseId },
+      select: {
+        id: true,
+        title: true,
+      },
+    });
+    return { course };
+  } catch (error: any) {
+    console.error("Error fetching course by ID:", error);
+    return null;
+  }
+};

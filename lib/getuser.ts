@@ -1,10 +1,7 @@
 import { cookies } from "next/headers";
 import db from "@/lib/prisma";
 import { initAdmin } from "@/lib/firebase";
-import { auth } from "@/lib/firebase";
 import { User } from "@/lib/types";
-import { redirect } from "next/navigation";
-import { signout } from "@/actions/auth";
 
 export async function getUserFromCookie(): Promise<User | null> {
   const firebaseAdmin = await initAdmin();

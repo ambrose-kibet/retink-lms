@@ -4,13 +4,14 @@ import { getCourses } from "@/actions/courses";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import LoadingSkeleton from "./loading-skeleton";
 import Image from "next/image";
+import EnrollButton from "./enroll-component";
 
 const Home: React.FC = () => {
   const { data, isPending, isError } = useQuery({
     queryKey: ["courses"],
     queryFn: () => getCourses(),
-    placeholderData: keepPreviousData,
   });
+
   if (isPending)
     return (
       <div className="max-w-screen-xl  min-h-[calc(100vh-11.5rem)]  mx-auto flex flex-col px-2 pb-4">
@@ -53,9 +54,7 @@ const Home: React.FC = () => {
                   <p className="text-muted-foreground text-sm">{description}</p>
                 </div>
                 <div className="flex items-center justify-between px-2">
-                  <button className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors">
-                    View Course
-                  </button>
+                  <EnrollButton courseId={id} />
                 </div>
               </div>
             );

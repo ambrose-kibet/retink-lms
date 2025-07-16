@@ -41,8 +41,6 @@ const LoginForm = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: async (values: z.infer<typeof LoginSchema>) => {
       const data = await signin(values);
-      console.log("Login Data:", data);
-
       if (data?.error) {
         setError(data.error);
         return;

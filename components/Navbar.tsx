@@ -14,6 +14,7 @@ import Link from "next/link";
 import { User } from "@/lib/types";
 import { useMutation } from "@tanstack/react-query";
 import { signout } from "@/actions/auth";
+import { useCurrentUser } from "@/app/_hooks/use-current-user";
 
 type NavbarProps = {
   user: User | null;

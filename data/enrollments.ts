@@ -42,21 +42,13 @@ export const getMyMyCourseDetails = async (
   courseId: string
 ) => {
   try {
-    const enrollment = await db.enrollment.findUnique({
+    const enrollment = await db.enrollment.findFirst({
       where: {
-        userId_courseId: {
-          userId,
-          courseId,
-        },
+        userId,
+        courseId,
       },
       include: {
         course: {
-          select: {
-            id: true,
-            title: true,
-            description: true,
-            thumbnail: true,
-          },
           include: {
             lessons: {
               select: {
@@ -66,36 +58,41 @@ export const getMyMyCourseDetails = async (
                 youtubeUrl: true,
                 createdAt: true,
               },
-              include: {
-                lessonProgress: {
-                  where: { userId },
-                  select: { completed: true },
-                },
+              orderBy: {
+                order: "asc",
               },
             },
+          },
+        },
+        lessonProgress: {
+          where: { completed: true },
+          select: {
+            lessonId: true,
+            completed: true,
           },
         },
       },
     });
 
-    return { status: "success", enrollment };
-  } catch (error: any) {
+    return enrollment;
+  } catch (error) {
     console.error("Error fetching course details:", error);
-    return null;
+    throw new Error("Failed to fetch course details");
   }
 };
 
 export const markLessonAsCompleted = async (
   userId: string,
-  courseId: string,
+  enrollmentId: string,
   lessonId: string
 ) => {
   try {
     const lessonProgress = await db.lessonProgress.upsert({
       where: {
-        userId_lessonId: {
+        userId_lessonId_enrollmentId: {
           userId,
           lessonId,
+          enrollmentId,
         },
       },
       update: {
@@ -104,6 +101,7 @@ export const markLessonAsCompleted = async (
       create: {
         userId,
         lessonId,
+        enrollmentId,
         completed: true,
       },
     });
@@ -116,15 +114,16 @@ export const markLessonAsCompleted = async (
 
 export const unMarkLessonAsCompleted = async (
   userId: string,
-  courseId: string,
+  enrollmentId: string,
   lessonId: string
 ) => {
   try {
     const lessonProgress = await db.lessonProgress.update({
       where: {
-        userId_lessonId: {
+        userId_lessonId_enrollmentId: {
           userId,
           lessonId,
+          enrollmentId,
         },
       },
       data: {
@@ -151,6 +150,29 @@ export const checkEnrollment = async (userId: string, courseId: string) => {
     return { status: "success", enrolled: !!enrollment };
   } catch (error: any) {
     console.error("Error checking enrollment:", error);
+    return null;
+  }
+};
+
+export const addLessonToCourse = async (
+  courseId: string,
+  lesson: {
+    title: string;
+    content: string;
+    youtubeUrl: string;
+    order: number;
+  }
+) => {
+  try {
+    const newLesson = await db.lesson.create({
+      data: {
+        ...lesson,
+        courseId,
+      },
+    });
+    return { status: "success", lesson: newLesson };
+  } catch (error: any) {
+    console.error("Error adding lesson to course:", error);
     return null;
   }
 };
