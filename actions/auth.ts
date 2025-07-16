@@ -1,4 +1,5 @@
 "use server";
+
 import { auth } from "@/lib/firebase";
 import { LoginSchema, RegistrationSchema } from "@/schemas";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -7,6 +8,8 @@ import { createUser, getUserById } from "@/data/user";
 import z from "zod";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { getUserFromCookie } from "@/lib/getuser";
+
 export const signup = async (values: z.infer<typeof RegistrationSchema>) => {
   const result = RegistrationSchema.safeParse(values);
   if (!result.success) {
@@ -101,4 +104,9 @@ export const signout = async () => {
       error: (error?.message as string) || "An error occurred during signout.",
     };
   }
+};
+
+export const getCurrentUser = async () => {
+  const user = await getUserFromCookie();
+  return user;
 };
