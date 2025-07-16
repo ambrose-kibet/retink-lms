@@ -40,6 +40,7 @@ model Enrollment {
   course    Course   @relation(fields: [courseId], references: [id])
   courseId  String
   enrolledAt DateTime @default(now())
+  lessonProgress LessonProgress[]
 
   @@unique([userId, courseId]) // Prevent duplicate enrollments
 }
@@ -62,8 +63,9 @@ model LessonProgress {
   userId    String
   lesson    Lesson   @relation(fields: [lessonId], references: [id])
   lessonId  String
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id])
+  enrollmentId String
   completed Boolean  @default(false)
   completedAt DateTime?
-
-  @@unique([userId, lessonId]) // Only one progress record per lesson per user
+  @@unique([userId, lessonId, enrollmentId]) // Only one progress record per lesson per user
 }
