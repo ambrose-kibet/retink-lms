@@ -1,10 +1,13 @@
+import { signout } from "@/actions/auth";
 import { getUserFromCookie } from "@/lib/getuser";
 import { redirect } from "next/navigation";
 import { PropsWithChildren } from "react";
 
 const ProtectedLayout = async ({ children }: PropsWithChildren) => {
   const user = await getUserFromCookie();
+
   if (!user?.id) {
+    await signout();
     return redirect("/auth");
   }
   return (
