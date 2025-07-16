@@ -5,12 +5,14 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-const CourseDetailsPage: React.FC<{ params: { id: string } }> = async ({
-  params,
-}: {
-  params: { id: string };
-}) => {
-  const { id: courseId } = await params;
+interface PageProps {
+  params: {
+    id: string;
+  };
+}
+
+const CourseDetailsPage = async ({ params }: PageProps) => {
+  const { id: courseId } = params;
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
     queryKey: ["my-courses", courseId],
