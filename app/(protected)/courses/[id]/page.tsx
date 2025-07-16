@@ -5,12 +5,17 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-export default async function Page({ params }: { params: { id: string } }) {
-  const { id: courseId } = params;
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const resolvedParams = await params;
+  const { id: courseId } = resolvedParams;
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
     queryKey: ["my-courses", courseId],
-    queryFn: () => myCourseDetails(courseId),
+    queryFn: () => myCourseDetails(courseId as string),
   });
   return (
     <div>
